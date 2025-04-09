@@ -90,7 +90,7 @@ div{
 
         async function baixarTarefas() {
 
-            var tarefas = await fetch("http://localhost:8080/tarefas")
+            var tarefas = await fetch("https://tarefas-kdme.onrender.com/tarefas")
             var listaDeTarefas = await tarefas.json()
             olHTML.innerHTML = ""
             listaDeTarefas.forEach((tarefa,index) => {
@@ -121,7 +121,7 @@ div{
             let tarefa = document.getElementById("tarefa").value
             let categoria = document.getElementById("categoria").value
         
-            let req = await fetch("http://localhost:8080/tarefa", {
+            let req = await fetch("https://tarefas-kdme.onrender.com/tarefa", {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",
@@ -133,7 +133,7 @@ div{
      
 
         async function excluirTarefa(index){
-            let req = await fetch("http://localhost:8080/tarefa/" + index ,
+            let req = await fetch("https://tarefas-kdme.onrender.com/tarefa" + index ,
              {method:"DELETE"})
             
 
@@ -146,7 +146,7 @@ div{
             let tarefa =prompt("Digite um novo nome para a tarefa:" + tarefaOri)
 
 
-            let req = await fetch("http://localhost:8080/tarefa/" + index ,
+            let req = await fetch("https://tarefas-kdme.onrender.com/tarefa" + index ,
              {method:"PUT" ,
             headers:{
                     "Content-type": "application/json",

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    
+    gap: 2.5px;
+}
+.excluir{
+    background-color: rgb(231, 61, 18);
+    border: 0px;
+}
+.editar{
+    background-color: rgb(236, 139, 12);
+    border: 0px;
+}
+ol{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+}
+li{
+display: flex;
+gap: 5px;
+}
+input{
+width: 292px;
+}
+select{
+width: 300px;
+}
+.cadastrar{
+width: 300px;
+background-color: rgb(126, 126, 126);
+border: 0px;
+}
+div{
+    border-radius: 5px;
+    padding: 20px;
+    align-items: center;
+    width: 400px;
+    display: flex;
+    flex-direction: column; 
+    gap: 1.0px; 
+    background-color: rgb(165, 165, 165); 
+}
+
+
+
+
+</style>
+
+<body>
+
+
+    <div>
+    <!-- <form action="http://localhost:8080/tarefa" method="POST"> -->
+    <input type="text" placeholder="Coloque sua Tarefa" id="tarefa" required>
+    <select name="" id="categoria">
+        <option value="" disabled selected>Selecione uma opção</option>
+        <option value="casa">Casa</option>
+        <option value="trabalho">Trabalho</option>
+    </select>
+    <button onclick="salvarTarefa()" class="cadastrar">Cadastrar Tarefa</button>
+    <!-- </form> -->
+
+    <ol id="listaDeTarefas">
+
+    </ol>
+
+</div>
+
+
+
+
+    <script>
+
+        const olHTML = document.getElementById("listaDeTarefas")
+
+        async function baixarTarefas() {
+
+            var tarefas = await fetch("http://localhost:8080/tarefas")
+            var listaDeTarefas = await tarefas.json()
+            olHTML.innerHTML = ""
+            listaDeTarefas.forEach((tarefa,index) => {
+                const liHTML = document.createElement("li")
+                if(tarefa.categoria == "casa"){
+                    liHTML.innerHTML = `<span>🏠</span>` 
+                    + " "  +
+                     tarefa.tarefa +
+                     `<button onclick='excluirTarefa(${tarefa.id})' class='excluir'  >Excluir</button>
+                     <button onclick='editarTarefa("${tarefa.tarefa}" , ${tarefa.id})' class='editar'>Editar</button>
+                     `
+                }
+                else{
+                     liHTML.innerHTML = `<span>👨‍💼</span>`+ " " +tarefa.tarefa + `<button onclick='excluirTarefa(${tarefa.id})'>Excluir</button>
+                     <button onclick='editarTarefa("${tarefa.tarefa}" , ${tarefa.id})'>Editar</button>
+                       `
+                }
+                
+                olHTML.appendChild(liHTML)
+
+            })
+
+        }
+
+
+
+        async function salvarTarefa() {
+            let tarefa = document.getElementById("tarefa").value
+            let categoria = document.getElementById("categoria").value
+        
+            let req = await fetch("http://localhost:8080/tarefa", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({ tarefa , categoria})
+            })
+            baixarTarefas()
+        }
+     
+
+        async function excluirTarefa(index){
+            let req = await fetch("http://localhost:8080/tarefa/" + index ,
+             {method:"DELETE"})
+            
+
+            baixarTarefas()
+
+            
+        }
+
+        async function editarTarefa(tarefaOri , index){
+            let tarefa =prompt("Digite um novo nome para a tarefa:" + tarefaOri)
+
+
+            let req = await fetch("http://localhost:8080/tarefa/" + index ,
+             {method:"PUT" ,
+            headers:{
+                    "Content-type": "application/json",
+            },
+            body: JSON.stringify({ tarefa , index})
+        
+        })
+        }
+    
+
+
+        baixarTarefas()
+    
+        
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
